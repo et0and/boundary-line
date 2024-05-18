@@ -9,19 +9,19 @@ interface MarqueeProps {
 const Marquee: React.FC<MarqueeProps> = ({ text, speed = 50 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const textRef = React.useRef<HTMLSpanElement>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
   const [textWidth, setTextWidth] = useState(0);
   const x = useMotionValue(0);
 
-  const containerWidth = containerRef.current?.offsetWidth ?? 0;
-
   const marqueeRange = useTransform(
     x,
-    [-containerWidth, textWidth],
-    [textWidth, 0]
+    [0, textWidth + containerWidth],
+    [0, -textWidth]
   );
 
   useLayoutEffect(() => {
-    if (textRef.current) {
+    if (containerRef.current && textRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
       setTextWidth(textRef.current.offsetWidth);
     }
   }, [text]);
@@ -31,7 +31,14 @@ const Marquee: React.FC<MarqueeProps> = ({ text, speed = 50 }) => {
 
     const animate = () => {
       timeout = window.setTimeout(() => {
-        x.set(x.get() + speed / 60);
+        x.set(x.get() - speed / 60);
+
+        // Check if the text has moved out of the container
+        if (x.get() <= -textWidth) {
+          // Reset the x value to loop the text
+          x.set(containerWidth);
+        }
+
         animate();
       }, 1000 / 60);
     };
@@ -39,11 +46,15 @@ const Marquee: React.FC<MarqueeProps> = ({ text, speed = 50 }) => {
     animate();
 
     return () => window.clearTimeout(timeout);
-  }, [speed, x]);
+  }, [speed, x, textWidth, containerWidth]);
 
   return (
-    <div ref={containerRef} className="overflow-hidden whitespace-nowrap">
-      <motion.span ref={textRef} style={{ x: marqueeRange }} className="inline-block">
+    <div ref={containerRef} className="overflow-hidden whitespace-nowrap w-full">
+      <motion.span
+        ref={textRef}
+        style={{ x: marqueeRange }}
+        className="inline-block"
+      >
         {text}
       </motion.span>
     </div>
