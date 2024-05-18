@@ -1,6 +1,6 @@
 
 import { Inter } from "next/font/google";
-import Marquee from '../components/Marquee';
+import Marquee from '../components/marquee';
 
 const inter = Inter({ subsets: ["latin"] });
 
