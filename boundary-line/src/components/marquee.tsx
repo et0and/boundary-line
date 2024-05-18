@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 interface MarqueeProps {
@@ -8,30 +8,30 @@ interface MarqueeProps {
 
 const Marquee: React.FC<MarqueeProps> = ({ text, speed = 50 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const textRef = React.useRef<HTMLSpanElement>(null);
+  const [textWidth, setTextWidth] = useState(0);
   const x = useMotionValue(0);
 
   const containerWidth = containerRef.current?.offsetWidth ?? 0;
-  const textWidth = React.useMemo(() => {
-    const span = document.createElement('span');
-    span.textContent = text;
-    document.body.appendChild(span);
-    const width = span.offsetWidth;
-    document.body.removeChild(span);
-    return width;
-  }, [text]);
 
   const marqueeRange = useTransform(
     x,
-    [0, textWidth + containerWidth],
-    [0, -textWidth]
+    [-containerWidth, textWidth],
+    [textWidth, 0]
   );
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      setTextWidth(textRef.current.offsetWidth);
+    }
+  }, [text]);
 
   React.useEffect(() => {
     let timeout: number;
 
     const animate = () => {
       timeout = window.setTimeout(() => {
-        x.set(x.get() - speed / 60);
+        x.set(x.get() + speed / 60);
         animate();
       }, 1000 / 60);
     };
@@ -43,7 +43,7 @@ const Marquee: React.FC<MarqueeProps> = ({ text, speed = 50 }) => {
 
   return (
     <div ref={containerRef} className="overflow-hidden whitespace-nowrap">
-      <motion.span style={{ x: marqueeRange }} className="inline-block">
+      <motion.span ref={textRef} style={{ x: marqueeRange }} className="inline-block">
         {text}
       </motion.span>
     </div>
