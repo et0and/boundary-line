@@ -8,15 +8,15 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Boundary line (lessons - Dumb Type Memoriam)</title>
+        <title>Boundary line (lessons)</title>
         <meta
           property="og:title"
-          content="Boundary line (lessons - Dumb Type Memoriam)"
+          content="Boundary line (lessons)"
           key="title"
         />
         <meta
           property="twitter:title"
-          content="Boundary line (lessons - Dumb Type Memoriam)"
+          content="Boundary line (lessons)"
         />
         <meta name="theme-color" content="#ffffff" />
         <meta
@@ -26,15 +26,15 @@ export default function Home() {
         />
         <meta
           property="description"
-          content="As I await your response, my memory of you grows with time."
+          content="Where I end and you begin (for Dumb Type, in memoriam). "
         />
         <meta
           property="og:description"
-          content="As I await your response, my memory of you grows with time"
+          content="Where I end and you begin (for Dumb Type, in memoriam). "
         />
         <meta
           property="twitter:description"
-          content="As I await your response, my memory of you grows with time"
+          content="Where I end and you begin (for Dumb Type, in memoriam). "
         />
         <meta property="og:url" content="https://work.tom.so/boundary-line" />
         <meta property="og:image" content="/boundary-line/og.png" />
